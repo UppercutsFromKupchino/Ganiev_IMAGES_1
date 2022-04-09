@@ -4,13 +4,16 @@ import matplotlib.pyplot as plt
 
 # Построение гистограммы
 def make_hist(image):
-    hist = plt.hist(image.ravel(), 256)
-    hist_biba = [i for i in hist[0]]
+    hist = np.zeros(256)
 
-    for i in range(len(hist_biba)):
-        hist_biba[i] = hist_biba[i] / (image.shape[0] * image.shape[1])
+    for i in range(0, image.shape[0]):
+        for j in range(0, image.shape[1]):
+            hist[image[i][j]] += 1
 
-    return hist_biba
+    for i in range(len(hist)):
+        hist[i] = hist[i] / (image.shape[0] * image.shape[1])
+
+    return hist
 
 
 # Построение кумулятивной гистограммы
@@ -32,19 +35,22 @@ def draw_plot(hist_image):
     plt.show()
 
 
-# Построение кумулятивной бимодальной гистограммы
-def make_bimodal_cum_hist():
+# Построение бимодальной гистограммы
+def make_bimodal_hist():
     k = 256
-    bimodal_cum_hist = np.zeros(k)
+    bimodal_hist = np.zeros(k)
     step = 1 / (k / 4)
 
     for i in range(1, int(k / 4)):
-        bimodal_cum_hist[i] = bimodal_cum_hist[i - 1] + step
+        bimodal_hist[i] = bimodal_hist[i - 1] + step
     for i in range(int(k / 4), int(k / 2)):
-        bimodal_cum_hist[i] = bimodal_cum_hist[i - 1] - step
+        bimodal_hist[i] = bimodal_hist[i - 1] - step
     for i in range(int(k / 2), int(3 * k / 4)):
-        bimodal_cum_hist[i] = bimodal_cum_hist[i - 1] + step
+        bimodal_hist[i] = bimodal_hist[i - 1] + step
     for i in range(int(3 * k / 4), int(k)):
-        bimodal_cum_hist[i] = bimodal_cum_hist[i - 1] - step
+        bimodal_hist[i] = bimodal_hist[i - 1] - step
 
-    return bimodal_cum_hist
+    for i in range(0, k):
+        bimodal_hist[i] = bimodal_hist[i] / 124
+
+    return bimodal_hist
